@@ -39,7 +39,7 @@ struct ProfileView: View {
                 Section("General") {
                     HStack{
                         SettingsRawView(imageName: "gear",
-                                        title: "Version",
+                                        title: "App Version",
                                         tintColor: .gray)
                         Spacer()
                         
@@ -59,7 +59,9 @@ struct ProfileView: View {
                     }
                     
                     Button{
-                        print("Sign out..")
+                        Task{
+                            await viewModel.deleteUser()
+                        }
                     } label: {
                         SettingsRawView(imageName: "xmark.circle.fill",
                                         title: "Delete account",
@@ -69,9 +71,4 @@ struct ProfileView: View {
             }
         }
     }
-}
-
-
-#Preview {
-    ProfileView()
 }

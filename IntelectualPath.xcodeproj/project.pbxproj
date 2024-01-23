@@ -20,7 +20,7 @@
 		3EB63CF22B407636001011D2 /* WelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB63CF12B407636001011D2 /* WelcomeScreen.swift */; };
 		3EB63CF42B40763F001011D2 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB63CF32B40763F001011D2 /* LoginView.swift */; };
 		3EB63CF62B407646001011D2 /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB63CF52B407646001011D2 /* RegistrationView.swift */; };
-		3EB63CF82B40764E001011D2 /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB63CF72B40764E001011D2 /* MainMenuView.swift */; };
+		3EB63CF82B40764E001011D2 /* MainAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB63CF72B40764E001011D2 /* MainAuthView.swift */; };
 		3EB63CFC2B407686001011D2 /* QuizView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB63CFB2B407686001011D2 /* QuizView.swift */; };
 		3EB63CFE2B40768D001011D2 /* CoursesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB63CFD2B40768D001011D2 /* CoursesView.swift */; };
 		3EB63D002B407695001011D2 /* AchievementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB63CFF2B407695001011D2 /* AchievementsView.swift */; };
@@ -62,7 +62,7 @@
 		3EB63CF12B407636001011D2 /* WelcomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreen.swift; sourceTree = "<group>"; };
 		3EB63CF32B40763F001011D2 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		3EB63CF52B407646001011D2 /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
-		3EB63CF72B40764E001011D2 /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
+		3EB63CF72B40764E001011D2 /* MainAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainAuthView.swift; sourceTree = "<group>"; };
 		3EB63CFB2B407686001011D2 /* QuizView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizView.swift; sourceTree = "<group>"; };
 		3EB63CFD2B40768D001011D2 /* CoursesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursesView.swift; sourceTree = "<group>"; };
 		3EB63CFF2B407695001011D2 /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
@@ -102,6 +102,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3E69E5672B5FDF7B00E2119A /* MainView */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = MainView;
+			sourceTree = "<group>";
+		};
 		3E6BC3052B45CCEB00FC8626 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -139,7 +146,6 @@
 				3EF3357A2B5E90AA00ACC4A6 /* Core */,
 				3EB63CEF2B40756D001011D2 /* Model */,
 				3EF335612B5C3D4B00ACC4A6 /* Extensions */,
-				3EB63CF02B40759B001011D2 /* Coordinators */,
 				3EB63CE32B40755B001011D2 /* Assets.xcassets */,
 				3EF335802B5E9DC200ACC4A6 /* GoogleService-Info.plist */,
 				3EB63CE52B40755B001011D2 /* Preview Content */,
@@ -186,13 +192,6 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		3EB63CF02B40759B001011D2 /* Coordinators */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Coordinators;
-			sourceTree = "<group>";
-		};
 		3EF3355E2B5C18B700ACC4A6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -211,6 +210,7 @@
 		3EF3356C2B5D4F8000ACC4A6 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				3EF3356D2B5D4F9300ACC4A6 /* Profile */,
 				3EF3357C2B5E925600ACC4A6 /* ViewModel */,
 				3EF3357B2B5E924E00ACC4A6 /* View */,
 			);
@@ -245,7 +245,7 @@
 		3EF3357A2B5E90AA00ACC4A6 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				3EF3356D2B5D4F9300ACC4A6 /* Profile */,
+				3E69E5672B5FDF7B00E2119A /* MainView */,
 				3EF335822B5EB16400ACC4A6 /* OnBoarding */,
 				3EF3356C2B5D4F8000ACC4A6 /* Authentication */,
 				3EF3357F2B5E99A500ACC4A6 /* Root */,
@@ -258,7 +258,7 @@
 		3EF3357B2B5E924E00ACC4A6 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				3EB63CF72B40764E001011D2 /* MainMenuView.swift */,
+				3EB63CF72B40764E001011D2 /* MainAuthView.swift */,
 				3EB63CF32B40763F001011D2 /* LoginView.swift */,
 				3EB63CF52B407646001011D2 /* RegistrationView.swift */,
 			);
@@ -392,7 +392,7 @@
 				3E6BC3012B45BB4200FC8626 /* OnBoardingItem.swift in Sources */,
 				3EB63D0E2B4076F9001011D2 /* CoursesViesModel.swift in Sources */,
 				3EF335632B5C3D5800ACC4A6 /* String.swift in Sources */,
-				3EB63CF82B40764E001011D2 /* MainMenuView.swift in Sources */,
+				3EB63CF82B40764E001011D2 /* MainAuthView.swift in Sources */,
 				3EB63CE22B407558001011D2 /* ContentView.swift in Sources */,
 				3EF3356B2B5D2F2800ACC4A6 /* ResizableLottie.swift in Sources */,
 				3E6BC3042B45BBC000FC8626 /* OnBoardingScreen.swift in Sources */,

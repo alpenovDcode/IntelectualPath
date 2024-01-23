@@ -8,13 +8,24 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var showingWelcomeScreen = true
     @EnvironmentObject var viewModel: AuthenticationViewModel
+
     var body: some View {
-        Group{
-            if viewModel.userSession != nil {
-                ProfileView()
+        Group {
+            if showingWelcomeScreen {
+                WelcomeScreen()
             } else {
-                LoginView()
+                if viewModel.userSession != nil {
+                    ProfileView()
+                } else {
+                    MainAuthView()
+                }
+            }
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.showingWelcomeScreen = false
             }
         }
     }

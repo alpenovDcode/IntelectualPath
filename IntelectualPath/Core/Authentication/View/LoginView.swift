@@ -72,7 +72,6 @@ struct LoginView: View {
 
                 
             }
-            .background(.white)
         }
     }
 }

@@ -9,14 +9,14 @@ import SwiftUI
 import Lottie
 
 
-struct MainMenuView: View {
+struct MainAuthView: View {
     @State var onboardingItems: [OnBoardingItem] = [
         .init(title: "IntelectualPath",
               subtitle: "Education is a passport to the future, for tomorrow belongs to those who prepare for it today.",
               lottieView: .init(name: "Hello", bundle: .main))
     ]
     @EnvironmentObject var viewModel: AuthenticationViewModel
-    @State private var currentViewShowing: String = "login"
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {

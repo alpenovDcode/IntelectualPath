@@ -120,7 +120,7 @@ struct OnBoardingScreen: View {
             .frame(width: size.width * CGFloat(onBoardingItems.count), alignment: .leading)
             if isMainViewActive {
                 withAnimation(.easeInOut) {
-                    MainMenuView()
+                    MainAuthView()
                         .transition(.move(edge: .bottom))
                 }
             }
