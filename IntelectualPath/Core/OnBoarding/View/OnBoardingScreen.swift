@@ -10,17 +10,18 @@ import SwiftUI
 struct OnBoardingScreen: View {
     @State var onBoardingItems: [OnBoardingItem] = [
         .init(title: "Study",
-             subtitle: "Learn any programming languages and confirm the completed material with a quiz.",
+              subtitle: "Learn any programming languages and confirm the completed material with a quiz.",
               lottieView: .init(name: "Study", bundle: .main)),
         .init(title: "Share",
-             subtitle: "Share your knowledge with others. Get feedback from other users.",
+              subtitle: "Share your knowledge with others. Get feedback from other users.",
               lottieView: .init(name: "Share", bundle: .main)),
         .init(title: "Create",
-             subtitle: "Create discussions and solve the problem together with other users.",
+              subtitle: "Create discussions and solve the problem together with other users.",
               lottieView: .init(name: "Create", bundle: .main))
     ]
     // MARK: Current slide index
     @State var currentIndex: Int = 0
+    @State private var isMainViewActive = false
     var body: some View {
         GeometryReader{
             let size = $0.size
@@ -49,7 +50,7 @@ struct OnBoardingScreen: View {
                         // MARK: Movable slides
                         VStack(spacing: 15){
                             let offset = -CGFloat(currentIndex) * size.width
-                            ResizableLottieView(onboardingItem: $item)
+                            ResizableLottie(onboardingItem: $item)
                                 .frame(height: size.width)
                                 .onAppear {
                                     // MARK: Intially playing first slide animation
@@ -61,6 +62,7 @@ struct OnBoardingScreen: View {
                                 .animation(.easeInOut(duration: 0.5), value: currentIndex)
                             Text(item.title)
                                 .font(.title.bold())
+                                .foregroundColor(.black)
                                 .offset(x: offset)
                                 .animation(.easeInOut(duration: 0.5).delay(0.1), value: currentIndex)
                             Text(item.subtitle)
@@ -76,45 +78,52 @@ struct OnBoardingScreen: View {
                         
                         // MARK: Next -> Login button
                         VStack(spacing: 15){
-                            Text(isLastSlide ? "Login" : "Next")
+                            Text(isLastSlide ? "Start" : "Next")
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
-                                .padding(.vertical, isLastSlide ? 13 :12)
+                                .padding(.vertical, isLastSlide ? 13 : 12)
                                 .frame(maxWidth: .infinity)
                                 .background(
                                     Capsule()
                                         .fill(.blue)
                                 )
-                                .padding(.horizontal,isLastSlide ? 30 : 100)
+                                .padding(.horizontal, isLastSlide ? 30 : 100)
                                 .onTapGesture {
-                                    // MARK: UPD to next index
-                                    let currentProgress = onBoardingItems[currentIndex].lottieView.currentProgress
-                                    if currentIndex < onBoardingItems.count - 1 {
-                                        // MARK: pause previous animation
-                                        onBoardingItems[currentIndex].lottieView.currentProgress = (currentProgress == 0 ? 0.7 : currentProgress)
-                                        currentIndex += 1
-                                        // MARK: play next animation
-                                        playAnimation()
+                                    if isLastSlide {
+                                        isMainViewActive = true
+                                    } else {
+                                        let currentProgress = onBoardingItems[currentIndex].lottieView.currentProgress
+                                        if currentIndex < onBoardingItems.count - 1 {
+                                            onBoardingItems[currentIndex].lottieView.currentProgress = (currentProgress == 0 ? 0.7 : currentProgress)
+                                            currentIndex += 1
+                                            playAnimation()
+                                        }
                                     }
                                 }
                             
-                            HStack{
+                            HStack {
                                 Text("Terms of Service")
-                                
                                 Text("Privacy Policy")
-                                
                             }
                             .font(.caption2)
                             .underline(true, color: .primary)
                             .offset(y: 5)
                         }
                     }
+                    
                     .animation(.easeInOut, value: isLastSlide)
                     .padding(15)
                     .frame(width: size.width, height: size.height)
                 }
             }
+            .background(.white)
             .frame(width: size.width * CGFloat(onBoardingItems.count), alignment: .leading)
+            if isMainViewActive {
+                withAnimation(.easeInOut) {
+                    MainMenuView()
+                        .transition(.move(edge: .bottom))
+                }
+            }
         }
     }
     
@@ -128,39 +137,5 @@ struct OnBoardingScreen: View {
             return index
         }
         return 0
-    }
-}
-
-#Preview {
-    OnBoardingScreen()
-}
-
-
-// MARK: Resizable lottie view without background
-struct ResizableLottieView: UIViewRepresentable {
-    @Binding var onboardingItem: OnBoardingItem
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView()
-        view.backgroundColor = .clear
-        setupLottieView(view)
-        return view
-    }
-    
-    func updateUIView(_ uiView: UIView, context: Context) {
-        
-    }
-    
-    func setupLottieView(_ to: UIView) {
-        let lottieView = onboardingItem.lottieView
-        lottieView.backgroundColor = .clear
-        lottieView.translatesAutoresizingMaskIntoConstraints = false
-        
-        // MARK: Applying constraints
-        let constraints = [
-            lottieView.widthAnchor.constraint(equalTo: to.widthAnchor),
-            lottieView.heightAnchor.constraint(equalTo: to.heightAnchor),
-        ]
-        to.addSubview(lottieView)
-        to.addConstraints(constraints)
     }
 }

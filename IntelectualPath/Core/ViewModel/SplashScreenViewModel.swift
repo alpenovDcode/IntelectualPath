@@ -7,13 +7,9 @@
 
 import SwiftUI
 
-struct SplashScreenView: View {
-    
+struct SplashScreenViewModel: View {
     var body: some View {
-        Text("IntelectualPath")
-        
+        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
 }
-#Preview {
-    SplashScreenView()
-}
+
