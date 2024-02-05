@@ -31,7 +31,3 @@ struct InputView: View {
         }
     }
 }
-
-#Preview {
-    InputView(text: .constant(""), title: "Emal address", placeholder: "name@example.com")
-}

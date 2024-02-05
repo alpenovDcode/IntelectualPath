@@ -6,27 +6,30 @@
 //
 
 import SwiftUI
+
 struct WelcomeScreen: View {
     @State private var isAppLoaded = false
     @State private var showOnBoarding = false
 
     var body: some View {
-        ZStack {
-            Color.white
-                .ignoresSafeArea()
-            VStack {
-                Image("Logo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 200, height: 200)
-                
-                Text("IntellectualPath")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(.black)
+        Group {
+            ZStack {
+                Color.white
+                    .ignoresSafeArea()
+                VStack {
+                    Image("Logo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 200, height: 200)
+                    
+                    Text("IntellectualPath")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(.black)
+                }
+                .opacity(isAppLoaded ? 0 : 1)
+                .animation(.easeInOut(duration: 0.5), value: isAppLoaded)
             }
-            .opacity(isAppLoaded ? 0 : 1)
-            .animation(.easeInOut(duration: 0.5), value: isAppLoaded)
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     withAnimation {
@@ -44,7 +47,6 @@ struct WelcomeScreen: View {
                     OnBoardingScreen()
                 }
             }
-            .zIndex(1)
         )
     }
 }

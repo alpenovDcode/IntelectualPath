@@ -24,7 +24,3 @@ struct SettingsRawView: View {
         }
     }
 }
-
-#Preview {
-    SettingsRawView(imageName: "gear", title: "Version", tintColor: .gray)
-}

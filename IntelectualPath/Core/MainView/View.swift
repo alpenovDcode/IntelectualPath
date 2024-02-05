@@ -1,18 +1,18 @@
 //
-//  ProfileViewModel.swift
+//  View.swift
 //  IntelectualPath
 //
-//  Created by Альпеша on 30.12.2023.
+//  Created by Альпеша on 05.02.2024.
 //
 
 import SwiftUI
 
-struct ProfileViewModel: View {
+struct View: View {
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
 }
 
 #Preview {
-    ProfileViewModel()
+    View()
 }

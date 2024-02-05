@@ -17,6 +17,7 @@ struct MainAuthView: View {
     ]
     @EnvironmentObject var viewModel: AuthenticationViewModel
     
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
@@ -44,15 +45,23 @@ struct MainAuthView: View {
                 VStack(spacing: 10) {
                     NavigationLink(destination: LoginView()) {
                         Text("Sign in")
-                            .buttonStyle(MainMenuButtonStyle())
+                            .foregroundColor(.white)
+                            .frame(width: 150)
+                            .padding()
+                            .background(Capsule().fill(.blue))
+                            .cornerRadius(10)
                     }
                     
                     NavigationLink(destination: RegistrationView()) {
-                        Text("Create an account")
-                            .buttonStyle(MainMenuButtonStyle())
+                        Text("Sign Up")
+                            .foregroundColor(.white)
+                            .frame(width: 150)
+                            .padding()
+                            .background(Capsule().fill(.blue))
+                            .cornerRadius(10)
                     }
-                    
                 }
+                
                 Spacer()
             }
             .background(.white)

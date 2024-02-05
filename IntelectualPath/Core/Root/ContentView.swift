@@ -15,12 +15,14 @@ struct ContentView: View {
         Group {
             if showingWelcomeScreen {
                 WelcomeScreen()
-            } else {
-                if viewModel.userSession != nil {
-                    ProfileView()
+            } else if let userSession = viewModel.userSession {
+                if userSession.isAnonymous {
+                    OnBoardingScreen()
                 } else {
-                    MainAuthView()
+                    MainScreenView()
                 }
+            } else {
+                OnBoardingScreen()
             }
         }
         .onAppear {
@@ -30,3 +32,4 @@ struct ContentView: View {
         }
     }
 }
+

@@ -9,11 +9,14 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
+    @State private var isEditProfileViewVisible = false
+    @State private var isAccountDeleted = false
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         if let user = viewModel.currentUser {
             List {
-                Section {
+               Section {
                     HStack{
                         Text(user.initials)
                             .font(.title)
@@ -49,18 +52,30 @@ struct ProfileView: View {
                     }
                 }
                 
+                Section("Profile info") {
+                    Button {
+                        isEditProfileViewVisible.toggle()
+                    } label: {
+                        SettingsRawView(imageName: "pencil",
+                                        title: "Edit profile",
+                                        tintColor: .gray)
+                    }
+                }.sheet(isPresented: $isEditProfileViewVisible) {
+                    EditProfileView()
+                }
+
                 Section("Account") {
-                    Button{
+                    Button {
                         viewModel.signOut()
+                        presentationMode.wrappedValue.dismiss() // Dismiss the ProfileView
                     } label: {
                         SettingsRawView(imageName: "arrow.left.circle.fill",
                                         title: "Sign Out",
                                         tintColor: .red)
                     }
-                    
-                    Button{
-                        Task{
-                            await viewModel.deleteUser()
+                    Button {
+                        Task {
+                            await deleteAccount()
                         }
                     } label: {
                         SettingsRawView(imageName: "xmark.circle.fill",
@@ -69,6 +84,15 @@ struct ProfileView: View {
                     }
                 }
             }
+        }
+    }
+    
+    private func deleteAccount() async {
+        do {
+            await viewModel.deleteUser()
+            isAccountDeleted = true
+        } catch {
+            print("Failed to delete account with error: \(error.localizedDescription)")
         }
     }
 }
