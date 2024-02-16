@@ -13,28 +13,26 @@ struct RegistrationView: View {
     @State private var fullName = ""
     @State private var password = ""
     @State private var confirmPassword = ""
+    
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: AuthenticationViewModel
     
     var body: some View {
-        VStack{
-            Image("Logo")
-                .resizable()
-                .scaledToFit()
+        VStack {
+            CachedLogoImage()
                 .frame(width: 100, height: 100)
                 .padding(.vertical, 32)
             
             // form fields
-            VStack(spacing: 16){
+            VStack(spacing: 16) {
                 InputView(text: $email,
                           title: "Email Address",
                           placeholder: "example@example.com")
-                
-                .autocorrectionDisabled()
+                    .autocorrectionDisabled()
                 InputView(text: $fullName,
                           title: "Full Name",
                           placeholder: "Enter your name")
-                InputView(text: $password, 
+                InputView(text: $password,
                           title: "Password",
                           placeholder: "Enter your password",
                           isSecureField: true)
@@ -44,18 +42,11 @@ struct RegistrationView: View {
                               placeholder: "Confirm your password",
                               isSecureField: true)
                     
-                    if !password.isEmpty && !confirmPassword.isEmpty{
-                        if password == confirmPassword {
-                            Image(systemName: "checkmark.circle.fill")
-                                .imageScale(.large)
-                                .fontWeight(.bold)
-                                .foregroundColor(.green)
-                        } else {
-                            Image(systemName: "xmark.circle.fill")
-                                .imageScale(.large)
-                                .fontWeight(.bold)
-                                .foregroundColor(.red)
-                        }
+                    if !password.isEmpty && !confirmPassword.isEmpty {
+                        Image(systemName: password == confirmPassword ? "checkmark.circle.fill" : "xmark.circle.fill")
+                            .imageScale(.large)
+                            .fontWeight(.bold)
+                            .foregroundColor(password == confirmPassword ? .green : .red)
                     }
                 }
             }
@@ -81,13 +72,12 @@ struct RegistrationView: View {
             .opacity(formIsValid ? 1.0 : 0.5)
             .padding(.top, 24)
             
-            
             Spacer()
             
             NavigationLink {
-                
+                // Your navigation destination here
             } label: {
-                HStack(spacing: 3){
+                HStack(spacing: 3) {
                     Text("Already have an account?")
                     Text("Sign In")
                         .fontWeight(.bold)
@@ -96,16 +86,13 @@ struct RegistrationView: View {
             }
         }
     }
-}
-
-// MARK: - AuthenticationFormProtocol
-extension RegistrationView: AuthenticationFormProtocol {
+    
     var formIsValid: Bool {
         return !email.isEmpty
-        && email.contains("@")
-        && !password.isEmpty
-        && password.count > 5
-        && confirmPassword == password
-        && !fullName.isEmpty
+            && email.contains("@")
+            && !password.isEmpty
+            && password.count > 5
+            && confirmPassword == password
+            && !fullName.isEmpty
     }
 }

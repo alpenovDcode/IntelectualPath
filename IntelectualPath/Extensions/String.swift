@@ -8,15 +8,18 @@
 import Foundation
 
 extension String {
-    
     func isValidEmail() -> Bool {
-        // test@email.com -> true
-        // test.com -> false
-        
-        let regex = try! NSRegularExpression(pattern: "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$", options: .caseInsensitive)
-        
-        return regex.firstMatch(in: self, range: NSRange(location: 0, length: count)) != nil
-        
+        let emailPattern = """
+            ^[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+
+            @[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?
+            (?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$
+            """
+        do {
+            let regex = try NSRegularExpression(pattern: emailPattern, options: .caseInsensitive)
+            return regex.firstMatch(in: self, range: NSRange(location: 0, length: count)) != nil
+        } catch {
+            // Handle the error here, e.g., log the error or return false
+            return false
+        }
     }
-    
 }

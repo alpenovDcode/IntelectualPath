@@ -66,7 +66,7 @@ struct OnBoardingScreen: View {
                                 .offset(x: offset)
                                 .animation(.easeInOut(duration: 0.5).delay(0.1), value: currentIndex)
                             Text(item.subtitle)
-                                .font(.system(size:14))
+                                .font(.system(size: 14))
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal, 15)
                                 .foregroundColor(.gray)
@@ -75,8 +75,7 @@ struct OnBoardingScreen: View {
                         }
                         
                         Spacer(minLength: 0)
-                        
-                        // MARK: Next -> Login button
+
                         VStack(spacing: 15){
                             Text(isLastSlide ? "Start" : "Next")
                                 .fontWeight(.bold)
@@ -132,7 +131,7 @@ struct OnBoardingScreen: View {
         onBoardingItems[currentIndex].lottieView.play(toProgress: 0.7)
     }
     
-    func indexOf(_ item: OnBoardingItem)->Int {
+    func indexOf(_ item: OnBoardingItem) -> Int {
         if let index = onBoardingItems.firstIndex(of: item) {
             return index
         }

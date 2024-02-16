@@ -26,7 +26,6 @@ struct AllCategoriesView: View {
     }
 }
 
-
 struct CategoryView: View {
     var categoryName: String
 

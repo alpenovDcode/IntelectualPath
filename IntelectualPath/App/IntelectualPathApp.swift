@@ -14,8 +14,21 @@ struct IntelectualPathApp: App {
     @StateObject var viewModel = AuthenticationViewModel()
 
     init() {
-            FirebaseApp.configure()
+        FirebaseApp.configure()
+        setupAppCheck()
+    }
+    
+    private func setupAppCheck() {
+        Task {
+            do {
+                let token = try await AppCheck.appCheck().token(forcingRefresh: false)
+                let tokenString = token.token
+
+            } catch {
+                //
+            }
         }
+    }
 
     var body: some Scene {
         WindowGroup {

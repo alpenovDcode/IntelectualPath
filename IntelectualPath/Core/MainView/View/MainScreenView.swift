@@ -16,7 +16,7 @@ struct MainScreenView: View {
         TabView(selection: $selectedTab) {
             NavigationView {
                 ScrollView {
-                    VStack(alignment: .leading) {
+                    LazyVStack(alignment: .leading) {
                         HeaderView()
                         
                         SearchBarView()

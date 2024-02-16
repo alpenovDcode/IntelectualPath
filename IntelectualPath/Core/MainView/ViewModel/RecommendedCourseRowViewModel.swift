@@ -10,4 +10,3 @@ import SwiftUI
 struct RecommendedCourseRowViewModel {
     let course: Course
 }
-

@@ -27,6 +27,31 @@ class AuthenticationViewModel: ObservableObject {
         }
     }
     
+    func checkIfNewUser() async -> Bool {
+            // Проверяем, есть ли текущий пользователь
+            guard let currentUser = Auth.auth().currentUser else {
+                // Если текущий пользователь отсутствует, считаем, что это новый пользователь
+                return true
+            }
+            
+            // Получаем UID текущего пользователя
+            let uid = currentUser.uid
+            
+            // Пытаемся получить информацию о пользователе из Firestore
+            do {
+                let documentSnapshot = try await Firestore.firestore().collection("users").document(uid).getDocument()
+                if documentSnapshot.exists {
+                    // Если документ пользователя существует, это не новый пользователь
+                    return false
+                } else {
+                    // Если документ пользователя не существует, считаем, что это новый пользователь
+                    return true
+                }
+            } catch {
+                return true // При возникновении ошибки также считаем пользователя новым
+            }
+        }
+    
     func signIn(withEmail email: String, password: String) async throws {
         do {
             let credential = EmailAuthProvider.credential(withEmail: email, password: password)
@@ -34,7 +59,7 @@ class AuthenticationViewModel: ObservableObject {
             self.userSession = result.user
             await fetchUser()
         } catch {
-            print("DEBUG: Failed to log in with error \(error.localizedDescription)")
+           //
         }
     }
     
@@ -49,15 +74,12 @@ class AuthenticationViewModel: ObservableObject {
                 try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
                 await fetchUser()
             } catch {
-                print("DEBUG: Failed to save user data to Firestore with error \(error.localizedDescription)")
                 throw error
             }
         } catch {
-            print("DEBUG: Failed to create user with error \(error.localizedDescription)")
             throw error
         }
     }
-
     
     func signOut() {
         do {
@@ -65,7 +87,7 @@ class AuthenticationViewModel: ObservableObject {
             self.userSession = nil
             self.currentUser = nil
         } catch {
-            print("DEBUG: Failed to sign out with error \(error.localizedDescription)")
+            //
         }
     }
     
@@ -81,10 +103,9 @@ class AuthenticationViewModel: ObservableObject {
             self.userSession = nil
             self.currentUser = nil
         } catch {
-            print("DEBUG: Failed to delete user document with error \(error.localizedDescription)")
+            //
         }
     }
-
     
     func editUser(newFullName: String, newEmail: String) async throws {
         do {
@@ -102,7 +123,6 @@ class AuthenticationViewModel: ObservableObject {
                 self.currentUser = updatedUser
             }
         } catch {
-            print("DEBUG: Failed to edit user with error \(error.localizedDescription)")
             throw error
         }
     }
@@ -114,7 +134,7 @@ class AuthenticationViewModel: ObservableObject {
             let documentSnapshot = try await Firestore.firestore().collection("users").document(uid).getDocument()
             self.currentUser = try documentSnapshot.data(as: User.self)
         } catch {
-            print("DEBUG: Failed to fetch user with error \(error.localizedDescription)")
+            //
         }
     }
 }
