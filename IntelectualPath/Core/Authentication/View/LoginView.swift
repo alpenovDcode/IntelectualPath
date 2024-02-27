@@ -12,31 +12,32 @@ struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
     @EnvironmentObject var viewModel: AuthenticationViewModel
-
+    @State private var isSignInSuccess = false
+    
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack {
-                CachedLogoImage() // Используем кэшированное изображение
+                CachedLogoImage()
                     .frame(width: 200, height: 200)
                     .padding(.vertical, 32)
                     .clipShape(Circle())
-
+                
                 VStack(spacing: 16) {
                     InputView(text: $email,
                               title: "Email Address",
                               placeholder: "example@example.com")
                         .autocorrectionDisabled()
-
+                    
                     InputView(text: $password, title: "Password", placeholder: "Enter your password", isSecureField: true)
                 }
                 .padding(.horizontal)
                 .padding(.top, 12)
-
-                SignInButton(action: signInAction, isEnabled: formIsValid) // Вынесем кнопку в отдельный View
-
+                
+                SignInButton(action: signInAction, isEnabled: formIsValid)
+                
                 Spacer()
-
-                NavigationLink(destination: RegistrationView().navigationBarBackButtonHidden(true)) {
+                
+                NavigationLink(destination: RegistrationView().navigationBarBackButtonHidden(false)) {
                     HStack(spacing: 3) {
                         Text("Don't have an account?")
                         Text("Sign up")
@@ -45,22 +46,29 @@ struct LoginView: View {
                     .font(.system(size: 14))
                 }
             }
+            .alert(isPresented: $isSignInSuccess) {
+                Alert(title: Text("Success"), message: Text("You have successfully signed in."), dismissButton: .default(Text("OK")) {
+                    viewModel.didSignInSuccess()
+                })
+            }
         }
     }
-
+    
     var formIsValid: Bool {
         return !email.isEmpty
             && email.contains("@")
             && !password.isEmpty
             && password.count > 5
     }
-
+    
     func signInAction() {
         Task {
             do {
                 try await viewModel.signIn(withEmail: email, password: password)
-            } catch {
-                // Handle any errors that might occur during sign-in
+                let userExists = await viewModel.checkIfAuthenticated()
+                if userExists {
+                    isSignInSuccess = true
+                }
             }
         }
     }
@@ -69,7 +77,7 @@ struct LoginView: View {
 struct SignInButton: View {
     let action: () -> Void
     let isEnabled: Bool
-
+    
     var body: some View {
         Button(action: action) {
             HStack {

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Firebase
+import FirebaseAppCheck
 
 @main
 struct IntelectualPathApp: App {
@@ -15,24 +16,12 @@ struct IntelectualPathApp: App {
 
     init() {
         FirebaseApp.configure()
-        setupAppCheck()
-    }
-    
-    private func setupAppCheck() {
-        Task {
-            do {
-                let token = try await AppCheck.appCheck().token(forcingRefresh: false)
-                let tokenString = token.token
-
-            } catch {
-                //
-            }
-        }
+        AppCheckSetup.setup()
     }
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LaunchView()
                 .environmentObject(viewModel)
         }
     }

@@ -6,13 +6,13 @@
 //
 
 import SwiftUI
-import FirebaseAuth
 
 struct RegistrationView: View {
     @State private var email = ""
     @State private var fullName = ""
     @State private var password = ""
     @State private var confirmPassword = ""
+    @State private var registrationCompleted = false
     
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: AuthenticationViewModel
@@ -23,7 +23,6 @@ struct RegistrationView: View {
                 .frame(width: 100, height: 100)
                 .padding(.vertical, 32)
             
-            // form fields
             VStack(spacing: 16) {
                 InputView(text: $email,
                           title: "Email Address",
@@ -55,7 +54,17 @@ struct RegistrationView: View {
             
             Button {
                 Task {
-                    try await viewModel.createUser(withEmail: email, password: password, fullName: fullName)
+                    do {
+                        try await viewModel.createUser(withEmail: email, password: password, fullName: fullName)
+                        
+                        let deviceInfo = viewModel.getDeviceInfo()
+                        
+                        try await viewModel.saveDeviceInfo(deviceInfo)
+                        
+                        registrationCompleted = true
+                        
+                        viewModel.isLoggedIn = true
+                    }
                 }
             } label: {
                 HStack {
@@ -66,24 +75,22 @@ struct RegistrationView: View {
                 .foregroundColor(.white)
                 .frame(width: UIScreen.main.bounds.width - 32, height: 48)
             }
+
             .background(Color(.systemBlue))
             .cornerRadius(10)
             .disabled(!formIsValid)
             .opacity(formIsValid ? 1.0 : 0.5)
             .padding(.top, 24)
+
             
             Spacer()
             
-            NavigationLink {
-                // Your navigation destination here
-            } label: {
-                HStack(spacing: 3) {
-                    Text("Already have an account?")
-                    Text("Sign In")
-                        .fontWeight(.bold)
-                }
-                .font(.system(size: 14))
+            HStack(spacing: 3) {
+                Text("Already have an account?")
+                Text("Sign In")
+                    .fontWeight(.bold)
             }
+            .font(.system(size: 14))
         }
     }
     

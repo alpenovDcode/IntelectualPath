@@ -16,7 +16,7 @@ struct AccountSectionView: View {
         Section("Account") {
             Button {
                 viewModel.signOut()
-                presentationMode.dismiss() // Dismiss the ProfileView
+                presentationMode.dismiss()
             } label: {
                 SettingsRawView(imageName: "arrow.left.circle.fill",
                                 title: "Sign Out",
@@ -39,8 +39,6 @@ struct AccountSectionView: View {
         do {
             await viewModel.deleteUser()
             isAccountDeleted = true
-        } catch {
-            //
         }
     }
 }

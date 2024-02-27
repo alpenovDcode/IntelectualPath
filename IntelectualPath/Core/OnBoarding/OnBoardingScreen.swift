@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct OnBoardingScreen: View {
+    
     @State var onBoardingItems: [OnBoardingItem] = [
         .init(title: "Study",
               subtitle: "Learn any programming languages and confirm the completed material with a quiz.",
@@ -19,7 +20,6 @@ struct OnBoardingScreen: View {
               subtitle: "Create discussions and solve the problem together with other users.",
               lottieView: .init(name: "Create", bundle: .main))
     ]
-    // MARK: Current slide index
     @State var currentIndex: Int = 0
     @State private var isMainViewActive = false
     var body: some View {
@@ -29,7 +29,6 @@ struct OnBoardingScreen: View {
                 ForEach($onBoardingItems){ $item in
                     let isLastSlide = (currentIndex == onBoardingItems.count - 1)
                     VStack{
-                        // MARK: Top navigation bar
                         HStack{
                             Button("Back") {
                                 if currentIndex > 0 {
@@ -47,13 +46,11 @@ struct OnBoardingScreen: View {
                         }
                         .tint(.blue)
                         .fontWeight(.bold)
-                        // MARK: Movable slides
                         VStack(spacing: 15){
                             let offset = -CGFloat(currentIndex) * size.width
                             ResizableLottie(onboardingItem: $item)
                                 .frame(height: size.width)
                                 .onAppear {
-                                    // MARK: Intially playing first slide animation
                                     if currentIndex == indexOf(item) {
                                         item.lottieView.play()
                                     }

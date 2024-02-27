@@ -1,14 +1,11 @@
-//
-//  AuthenticationViewModel.swift
-//  IntelectualPath
-//
-//  Created by Альпеша on 18.01.2024.
-//
+// AuthenticationViewModel.swift
 
 import Foundation
 import Firebase
 import FirebaseAuth
 import FirebaseFirestore
+import Combine
+import UIKit
 
 protocol AuthenticationFormProtocol {
     var formIsValid: Bool { get }
@@ -18,6 +15,8 @@ protocol AuthenticationFormProtocol {
 class AuthenticationViewModel: ObservableObject {
     @Published var userSession: FirebaseAuth.User?
     @Published var currentUser: User?
+    @Published var isAuthenticated = false
+    @Published var isLoggedIn = false
     
     init() {
         self.userSession = Auth.auth().currentUser
@@ -25,32 +24,33 @@ class AuthenticationViewModel: ObservableObject {
         Task {
             await fetchUser()
         }
+        
+        $userSession
+            .map { $0 != nil }
+            .assign(to: &$isAuthenticated)
     }
     
+    
     func checkIfNewUser() async -> Bool {
-            // Проверяем, есть ли текущий пользователь
-            guard let currentUser = Auth.auth().currentUser else {
-                // Если текущий пользователь отсутствует, считаем, что это новый пользователь
+        guard let currentUser = Auth.auth().currentUser else {
+            return true
+        }
+        let uid = currentUser.uid
+        do {
+            let documentSnapshot = try await Firestore.firestore().collection("users").document(uid).getDocument()
+            if documentSnapshot.exists {
+                return false
+            } else {
                 return true
             }
-            
-            // Получаем UID текущего пользователя
-            let uid = currentUser.uid
-            
-            // Пытаемся получить информацию о пользователе из Firestore
-            do {
-                let documentSnapshot = try await Firestore.firestore().collection("users").document(uid).getDocument()
-                if documentSnapshot.exists {
-                    // Если документ пользователя существует, это не новый пользователь
-                    return false
-                } else {
-                    // Если документ пользователя не существует, считаем, что это новый пользователь
-                    return true
-                }
-            } catch {
-                return true // При возникновении ошибки также считаем пользователя новым
-            }
+        } catch {
+            return true
         }
+    }
+    
+    func checkIfAuthenticated() async -> Bool {
+        return userSession != nil
+    }
     
     func signIn(withEmail email: String, password: String) async throws {
         do {
@@ -58,9 +58,26 @@ class AuthenticationViewModel: ObservableObject {
             let result = try await Auth.auth().signIn(with: credential)
             self.userSession = result.user
             await fetchUser()
-        } catch {
-           //
+            self.isAuthenticated = await checkIfAuthenticated()
+            self.isLoggedIn = true
+            didSignInSuccess()
         }
+    }
+    
+    func getDeviceInfo() -> [String: Any] {
+        let device = UIDevice.current
+        let systemVersion = device.systemVersion
+        let modelName = device.model
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        let deviceID = device.identifierForVendor?.uuidString ?? ""
+        
+        let deviceInfo: [String: Any] = [
+            "id": deviceID,
+            "model": modelName,
+            "os": systemVersion,
+            "appVersion": appVersion
+        ]
+        return deviceInfo
     }
     
     func createUser(withEmail email: String, password: String, fullName: String) async throws {
@@ -69,10 +86,16 @@ class AuthenticationViewModel: ObservableObject {
             self.userSession = result.user
             let user = User(id: result.user.uid, fullName: fullName, email: email)
             
+            let deviceInfo = getDeviceInfo()
+            
             do {
                 let encodedUser = try Firestore.Encoder().encode(user)
-                try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
+                var userData = encodedUser
+                userData["deviceInfo"] = deviceInfo
+                try await Firestore.firestore().collection("users").document(user.id).setData(userData)
+                
                 await fetchUser()
+                didRegistrationSuccess()
             } catch {
                 throw error
             }
@@ -80,12 +103,50 @@ class AuthenticationViewModel: ObservableObject {
             throw error
         }
     }
+
+    func updateProgress(forUserWithID userID: String, newProgress: Double) async throws {
+        do {
+            try await Firestore.firestore().collection("users").document(userID).updateData(["progress": newProgress])
+        } catch {
+            throw error
+        }
+    }
+
+    func registerUser() async throws -> Bool {
+        do {
+            try await createUser(withEmail: "example@example.com", password: "password", fullName: "John Doe")
+            return true
+        } catch {
+            return false
+        }
+    }
+    
+    func didSignInSuccess() {
+        isLoggedIn = true
+        NotificationCenter.default.post(name: Notification.Name("UserDidSignIn"), object: nil)
+    }
+    
+    func didRegistrationSuccess() {
+        isLoggedIn = true
+        NotificationCenter.default.post(name: Notification.Name("UserDidRegister"), object: nil)
+        NotificationCenter.default.post(name: Notification.Name("UserDidSignIn"), object: nil)
+    }
+    
+    func saveDeviceInfo(_ deviceInfo: [String: Any]) async throws {
+        do {
+            try await Firestore.firestore().collection("deviceInfo").document(deviceInfo["id"] as! String).setData(deviceInfo)
+        } catch {
+            throw error
+        }
+    }
+    
     
     func signOut() {
         do {
             try Auth.auth().signOut()
             self.userSession = nil
             self.currentUser = nil
+            self.isAuthenticated = false
         } catch {
             //
         }
@@ -96,12 +157,13 @@ class AuthenticationViewModel: ObservableObject {
             guard let user = Auth.auth().currentUser else {
                 return
             }
-
+            
             let uid = user.uid
             let userDocRef = Firestore.firestore().collection("users").document(uid)
             try await userDocRef.delete()
             self.userSession = nil
             self.currentUser = nil
+            self.isAuthenticated = false
         } catch {
             //
         }
@@ -129,7 +191,7 @@ class AuthenticationViewModel: ObservableObject {
     
     func fetchUser() async {
         guard let uid = Auth.auth().currentUser?.uid else { return }
-
+        
         do {
             let documentSnapshot = try await Firestore.firestore().collection("users").document(uid).getDocument()
             self.currentUser = try documentSnapshot.data(as: User.self)

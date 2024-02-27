@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct WelcomeScreen: View {
+    
+    
     @State private var isAppLoaded = false
     @State private var showOnBoarding = false
 
@@ -21,7 +23,7 @@ struct WelcomeScreen: View {
             .opacity(isAppLoaded ? 0 : 1)
             .animation(.easeInOut(duration: 0.5), value: isAppLoaded)
         }
-        .onAppear {
+        .task {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 withAnimation {
                     self.isAppLoaded = true

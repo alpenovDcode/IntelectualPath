@@ -8,19 +8,23 @@
 import SwiftUI
 
 struct HeaderView: View {
+    let user: User?
+    
     var body: some View {
         HStack {
-            VStack(alignment: .leading) {
-                Text("Hello")
-                    .foregroundColor(.gray)
-                Text("Tarek Masud")
-                    .font(.title)
-                    .fontWeight(.bold)
+            if let user = user {
+                VStack(alignment: .leading) {
+                    Text("Hello")
+                        .foregroundColor(.gray)
+                    Text(user.fullName)
+                        .font(.title)
+                        .fontWeight(.bold)
+                }
+                Spacer()
+                Image(systemName: "bell.fill")
+                    .foregroundColor(.orange)
+                    .imageScale(.large)
             }
-            Spacer()
-            Image(systemName: "bell.fill")
-                .foregroundColor(.orange)
-                .imageScale(.large)
         }
     }
 }

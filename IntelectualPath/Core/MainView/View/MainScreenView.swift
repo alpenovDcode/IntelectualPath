@@ -8,20 +8,22 @@
 import SwiftUI
 
 struct MainScreenView: View {
+    
     @State private var selectedTab = 0
     @EnvironmentObject var viewModel: AuthenticationViewModel
-    @State private var isProfileViewActive = false // New state variable for ProfileView activation
+    @State private var isProfileViewActive = false
     
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationView {
                 ScrollView {
-                    LazyVStack(alignment: .leading) {
-                        HeaderView()
+                    VStack(alignment: .leading) {
+                        HeaderView(user: viewModel.currentUser)
                         
                         SearchBarView()
                         
-                        ProgressCardView()
+//                        ProgressCardView(user: viewModel.currentUser)
+//                            .padding([.top, .bottom], 8)
                         
                         AllCategoriesView()
                         
@@ -44,10 +46,9 @@ struct MainScreenView: View {
                 }
                 .tag(1)
             
-            // ProfileView is now embedded in a NavigationView
-            NavigationView { // Wrap ProfileView in NavigationView
+            NavigationView {
                 ProfileView()
-                    .navigationBarTitle("Profile", displayMode: .inline) // Set navigation title
+                    .navigationBarTitle("Profile", displayMode: .inline)
                     .navigationBarItems(
                         trailing: Button(action: {
                             isProfileViewActive.toggle()
@@ -66,5 +67,9 @@ struct MainScreenView: View {
             .tag(2)
         }
         .accentColor(.blue)
+        .task {
+            await viewModel.fetchUser()
+        }
     }
 }
+

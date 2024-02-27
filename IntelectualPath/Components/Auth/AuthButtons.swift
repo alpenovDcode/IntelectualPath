@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct AuthButtons: View {
+    
     var body: some View {
         VStack(spacing: 10) {
             NavigationLink(destination: LoginView()) {

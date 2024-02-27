@@ -27,6 +27,29 @@ struct ProfileView: View {
 
                 AccountSectionView(viewModel: _viewModel, isAccountDeleted: $isAccountDeleted, presentationMode: presentationMode)
             }
+        } else {
+            NavigationView {
+                HStack{
+                    Text("Please Log in or Sign up")
+                    NavigationLink(destination: LoginView()) {
+                        Text("Sign In")
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                    }
+                    .padding()
+                    
+                    NavigationLink(destination: RegistrationView()) {
+                        Text("Sign Up")
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color.green)
+                            .cornerRadius(10)
+                    }
+                    .padding()
+                }
+            }
         }
     }
 }
