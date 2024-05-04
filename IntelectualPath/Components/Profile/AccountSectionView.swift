@@ -10,27 +10,19 @@ import SwiftUI
 struct AccountSectionView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
     @Binding var isAccountDeleted: Bool
-    @Binding var presentationMode: PresentationMode
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         Section("Account") {
-            Button {
+            Button("Sign Out") {
                 viewModel.signOut()
-                presentationMode.dismiss()
-            } label: {
-                SettingsRawView(imageName: "arrow.left.circle.fill",
-                                title: "Sign Out",
-                                tintColor: .red)
+                presentationMode.wrappedValue.dismiss()
             }
 
-            Button {
+            Button("Delete account") {
                 Task {
                     await deleteAccount()
                 }
-            } label: {
-                SettingsRawView(imageName: "xmark.circle.fill",
-                                title: "Delete account",
-                                tintColor: .red)
             }
         }
     }
@@ -39,6 +31,9 @@ struct AccountSectionView: View {
         do {
             await viewModel.deleteUser()
             isAccountDeleted = true
+            presentationMode.wrappedValue.dismiss()
+        } catch {
+            print("Failed to delete user: \(error)")
         }
     }
 }

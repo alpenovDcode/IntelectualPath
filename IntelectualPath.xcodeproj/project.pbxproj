@@ -7,10 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3E29795D2BE38CB000043951 /* QuiestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E29795C2BE38CB000043951 /* QuiestionView.swift */; };
+		3E29795F2BE38CC600043951 /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E29795E2BE38CC600043951 /* ResultView.swift */; };
+		3E2979612BE38CD800043951 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2979602BE38CD800043951 /* Question.swift */; };
 		3E5793142B878F6600F2C346 /* LaunchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5793132B878F6600F2C346 /* LaunchViewModel.swift */; };
 		3E5793162B87A6EA00F2C346 /* MockAppCheckProviderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5793152B87A6EA00F2C346 /* MockAppCheckProviderFactory.swift */; };
 		3E57931A2B88A58E00F2C346 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5793192B88A58E00F2C346 /* LaunchView.swift */; };
 		3E57931C2B89E67400F2C346 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E57931B2B89E67400F2C346 /* DeviceInfo.swift */; };
+		3E57931F2B92120B00F2C346 /* CoursesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E57931E2B92120B00F2C346 /* CoursesListView.swift */; };
+		3E5793222B9665F800F2C346 /* CourseListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5793212B9665F800F2C346 /* CourseListViewModel.swift */; };
 		3E69E56D2B60FC1900E2119A /* EditProifleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E69E56C2B60FC1900E2119A /* EditProifleView.swift */; };
 		3E6BC2FB2B45BA1B00FC8626 /* Share.json in Resources */ = {isa = PBXBuildFile; fileRef = 3E6BC2F82B45BA1B00FC8626 /* Share.json */; };
 		3E6BC2FC2B45BA1B00FC8626 /* Create.json in Resources */ = {isa = PBXBuildFile; fileRef = 3E6BC2F92B45BA1B00FC8626 /* Create.json */; };
@@ -75,10 +80,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3E29795C2BE38CB000043951 /* QuiestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuiestionView.swift; sourceTree = "<group>"; };
+		3E29795E2BE38CC600043951 /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
+		3E2979602BE38CD800043951 /* Question.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 		3E5793132B878F6600F2C346 /* LaunchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewModel.swift; sourceTree = "<group>"; };
 		3E5793152B87A6EA00F2C346 /* MockAppCheckProviderFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAppCheckProviderFactory.swift; sourceTree = "<group>"; };
 		3E5793192B88A58E00F2C346 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		3E57931B2B89E67400F2C346 /* DeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
+		3E57931E2B92120B00F2C346 /* CoursesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursesListView.swift; sourceTree = "<group>"; };
+		3E5793212B9665F800F2C346 /* CourseListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseListViewModel.swift; sourceTree = "<group>"; };
 		3E69E56C2B60FC1900E2119A /* EditProifleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProifleView.swift; sourceTree = "<group>"; };
 		3E6BC2F82B45BA1B00FC8626 /* Share.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Share.json; sourceTree = "<group>"; };
 		3E6BC2F92B45BA1B00FC8626 /* Create.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Create.json; sourceTree = "<group>"; };
@@ -115,10 +125,10 @@
 		3EB63CF32B40763F001011D2 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		3EB63CF52B407646001011D2 /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
 		3EB63CF72B40764E001011D2 /* MainAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainAuthView.swift; sourceTree = "<group>"; };
-		3EB63CFB2B407686001011D2 /* QuizView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizView.swift; sourceTree = "<group>"; };
+		3EB63CFB2B407686001011D2 /* QuizView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuizView.swift; path = ../VIew/QuizView.swift; sourceTree = "<group>"; };
 		3EB63CFD2B40768D001011D2 /* CoursesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursesView.swift; sourceTree = "<group>"; };
 		3EB63CFF2B407695001011D2 /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
-		3EB63D0B2B4076F0001011D2 /* QuizViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizViewModel.swift; sourceTree = "<group>"; };
+		3EB63D0B2B4076F0001011D2 /* QuizViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuizViewModel.swift; path = ../ViewModel/QuizViewModel.swift; sourceTree = "<group>"; };
 		3EB63D0D2B4076F9001011D2 /* CoursesViesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursesViesModel.swift; sourceTree = "<group>"; };
 		3EB63D0F2B407709001011D2 /* AchievementsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsViewModel.swift; sourceTree = "<group>"; };
 		3EDA80412B73C60D000A40F9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -158,6 +168,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3E29795A2BE38B0D00043951 /* Quiz */ = {
+			isa = PBXGroup;
+			children = (
+				3EB63D0B2B4076F0001011D2 /* QuizViewModel.swift */,
+				3EB63CFB2B407686001011D2 /* QuizView.swift */,
+			);
+			path = Quiz;
+			sourceTree = "<group>";
+		};
+		3E29795B2BE38C9700043951 /* QuizComps */ = {
+			isa = PBXGroup;
+			children = (
+				3E29795C2BE38CB000043951 /* QuiestionView.swift */,
+				3E29795E2BE38CC600043951 /* ResultView.swift */,
+			);
+			path = QuizComps;
+			sourceTree = "<group>";
+		};
+		3E57931D2B92113F00F2C346 /* Courses */ = {
+			isa = PBXGroup;
+			children = (
+				3E5793202B9665E600F2C346 /* ViewModel */,
+				3E57931E2B92120B00F2C346 /* CoursesListView.swift */,
+			);
+			path = Courses;
+			sourceTree = "<group>";
+		};
+		3E5793202B9665E600F2C346 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				3E5793212B9665F800F2C346 /* CourseListViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		3E69E5672B5FDF7B00E2119A /* MainView */ = {
 			isa = PBXGroup;
 			children = (
@@ -278,7 +323,6 @@
 		3EB63CED2B407564001011D2 /* VIew */ = {
 			isa = PBXGroup;
 			children = (
-				3EB63CFB2B407686001011D2 /* QuizView.swift */,
 				3EB63CFD2B40768D001011D2 /* CoursesView.swift */,
 				3EB63CFF2B407695001011D2 /* AchievementsView.swift */,
 			);
@@ -288,7 +332,6 @@
 		3EB63CEE2B407568001011D2 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				3EB63D0B2B4076F0001011D2 /* QuizViewModel.swift */,
 				3EB63D0D2B4076F9001011D2 /* CoursesViesModel.swift */,
 				3EB63D0F2B407709001011D2 /* AchievementsViewModel.swift */,
 			);
@@ -303,6 +346,7 @@
 				3EDC8BD02B59BD7E00B8B38C /* UserCredentials.swift */,
 				3EF335762B5E8AFB00ACC4A6 /* User.swift */,
 				3E73ED0E2B7114CC002EAE4F /* Course.swift */,
+				3E2979602BE38CD800043951 /* Question.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -348,6 +392,7 @@
 		3EF3356E2B5E7AD600ACC4A6 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				3E29795B2BE38C9700043951 /* QuizComps */,
 				3E73ED352B715D8C002EAE4F /* Profile */,
 				3E73ED2E2B715C1F002EAE4F /* Auth */,
 				3EF3356F2B5E7AED00ACC4A6 /* InputView.swift */,
@@ -369,6 +414,8 @@
 		3EF3357A2B5E90AA00ACC4A6 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				3E29795A2BE38B0D00043951 /* Quiz */,
+				3E57931D2B92113F00F2C346 /* Courses */,
 				3E69E5672B5FDF7B00E2119A /* MainView */,
 				3EF335822B5EB16400ACC4A6 /* OnBoarding */,
 				3EF3356C2B5D4F8000ACC4A6 /* Authentication */,
@@ -548,6 +595,7 @@
 				3EB63CF82B40764E001011D2 /* MainAuthView.swift in Sources */,
 				3E73ED392B715D9F002EAE4F /* EditProfileTextField.swift in Sources */,
 				3E69E56D2B60FC1900E2119A /* EditProifleView.swift in Sources */,
+				3E29795D2BE38CB000043951 /* QuiestionView.swift in Sources */,
 				3E5793162B87A6EA00F2C346 /* MockAppCheckProviderFactory.swift in Sources */,
 				3E73ED252B711722002EAE4F /* RecommendedCoursesViewModel.swift in Sources */,
 				3E57931A2B88A58E00F2C346 /* LaunchView.swift in Sources */,
@@ -557,11 +605,13 @@
 				3E73ECF12B700D99002EAE4F /* MainScreenView.swift in Sources */,
 				3E73ED372B715D99002EAE4F /* EditProfileTitleView.swift in Sources */,
 				3E6BC3042B45BBC000FC8626 /* OnBoardingScreen.swift in Sources */,
+				3E2979612BE38CD800043951 /* Question.swift in Sources */,
 				3EDC8BD12B59BD7E00B8B38C /* UserCredentials.swift in Sources */,
 				3EB63D002B407695001011D2 /* AchievementsView.swift in Sources */,
 				3E73ED1B2B711598002EAE4F /* ProgressCardView.swift in Sources */,
 				3EB63D0C2B4076F0001011D2 /* QuizViewModel.swift in Sources */,
 				3E73ED432B715E8E002EAE4F /* AccountSectionView.swift in Sources */,
+				3E5793222B9665F800F2C346 /* CourseListViewModel.swift in Sources */,
 				3EB63CE02B407558001011D2 /* IntelectualPathApp.swift in Sources */,
 				3EDC8BD72B59BDEF00B8B38C /* AuthenticationViewModel.swift in Sources */,
 				3E73ED212B7116A4002EAE4F /* AllCategoriesViewModel.swift in Sources */,
@@ -572,6 +622,7 @@
 				3EF335752B5E89B100ACC4A6 /* SettingsRawView.swift in Sources */,
 				3E73ED322B715C4D002EAE4F /* AuthButtons.swift in Sources */,
 				3E73ED412B715E79002EAE4F /* ProfileInfoSectionView.swift in Sources */,
+				3E29795F2BE38CC600043951 /* ResultView.swift in Sources */,
 				3E73ED3F2B715E70002EAE4F /* GeneralSectionView.swift in Sources */,
 				3E73ED342B715C62002EAE4F /* MainMenuButtonStyle.swift in Sources */,
 				3E73ED3B2B715DA7002EAE4F /* EditProfileSaveButton.swift in Sources */,
@@ -579,6 +630,7 @@
 				3E73ED192B711591002EAE4F /* SearchBarView.swift in Sources */,
 				3EB63D102B407709001011D2 /* AchievementsViewModel.swift in Sources */,
 				3E5793142B878F6600F2C346 /* LaunchViewModel.swift in Sources */,
+				3E57931F2B92120B00F2C346 /* CoursesListView.swift in Sources */,
 				3EF335772B5E8AFB00ACC4A6 /* User.swift in Sources */,
 				3E73ED1D2B71159F002EAE4F /* AllCategoriesView.swift in Sources */,
 				3EF335702B5E7AED00ACC4A6 /* InputView.swift in Sources */,

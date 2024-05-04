@@ -18,12 +18,13 @@ struct EditProfileView: View {
             Spacer()
             EditProfileTextField(title: "Full Name", text: $updatedFullName)
                 .padding(.bottom, 10)
-            
-            EditProfileTextField(title: "Email", text: $updatedEmail)
-                .padding(.bottom, 20)
             Spacer()
             EditProfileSaveButton(viewModel: _viewModel, updatedFullName: $updatedFullName, updatedEmail: $updatedEmail)
         }
         .padding()
     }
+}
+
+#Preview {
+    EditProfileView()
 }

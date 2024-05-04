@@ -26,7 +26,7 @@ struct LoginView: View {
                     InputView(text: $email,
                               title: "Email Address",
                               placeholder: "example@example.com")
-                        .autocorrectionDisabled()
+                    .autocorrectionDisabled()
                     
                     InputView(text: $password, title: "Password", placeholder: "Enter your password", isSecureField: true)
                 }
@@ -46,6 +46,12 @@ struct LoginView: View {
                     .font(.system(size: 14))
                 }
             }
+            .onAppear {
+                if UserDefaults.standard.bool(forKey: "isLoggedIn") {
+                    viewModel.isLoggedIn = true
+                    NotificationCenter.default.post(name: Notification.Name("UserDidSignIn"), object: nil)
+                }
+            }
             .alert(isPresented: $isSignInSuccess) {
                 Alert(title: Text("Success"), message: Text("You have successfully signed in."), dismissButton: .default(Text("OK")) {
                     viewModel.didSignInSuccess()
@@ -56,9 +62,9 @@ struct LoginView: View {
     
     var formIsValid: Bool {
         return !email.isEmpty
-            && email.contains("@")
-            && !password.isEmpty
-            && password.count > 5
+        && email.contains("@")
+        && !password.isEmpty
+        && password.count > 5
     }
     
     func signInAction() {
@@ -68,6 +74,7 @@ struct LoginView: View {
                 let userExists = await viewModel.checkIfAuthenticated()
                 if userExists {
                     isSignInSuccess = true
+                    NotificationCenter.default.post(name: Notification.Name("UserDidSignIn"), object: nil)
                 }
             }
         }
@@ -77,7 +84,6 @@ struct LoginView: View {
 struct SignInButton: View {
     let action: () -> Void
     let isEnabled: Bool
-    
     var body: some View {
         Button(action: action) {
             HStack {

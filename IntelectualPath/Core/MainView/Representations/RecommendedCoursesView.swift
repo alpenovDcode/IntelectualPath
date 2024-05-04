@@ -6,13 +6,15 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
+
+import SwiftUI
 
 struct RecommendedCourseRow: View {
-    let viewModel: RecommendedCourseRowViewModel
-
-        init(course: Course) {
-            self.viewModel = RecommendedCourseRowViewModel(course: course)
-        }
+    let course: Course
+    @Binding var selectedCourses: [Course]
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @State private var showAlert = false
 
     var body: some View {
         VStack {
@@ -21,71 +23,78 @@ struct RecommendedCourseRow: View {
                     .fill(Color.gray.opacity(0.2))
                     .frame(height: 120)
                     .overlay(
-                        Image(systemName: "play.circle.fill") // Play button
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 44, height: 44)
-                            .foregroundColor(.blue)
+                        Button(action: {
+                            Task {
+                                await handleCourseAddition(course)
+                            }
+                        }) {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 44, height: 44)
+                                .foregroundColor(.blue)
+                        }, alignment: .bottomTrailing
                     )
             }
-            
-            VStack(alignment: .leading) {
-                Text(viewModel.course.title)
-                    .font(.headline)
-                    .lineLimit(1)
-                
-                Text("By \(viewModel.course.instructor)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                
-                HStack {
-                    // Files count
-                    Image(systemName: "doc.fill")
-                        .foregroundColor(.secondary)
-                    Text("\(viewModel.course.filesCount) Files")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-
-                    Spacer(minLength: 0)
-                    
-                    // Course duration
-                    Image(systemName: "clock.fill")
-                        .foregroundColor(.secondary)
-                    Text(viewModel.course.duration)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-            }
             .padding([.leading, .trailing, .bottom], 8)
+
+            Text(course.title)
+                .font(.headline)
+                .lineLimit(1)
+
+            Text("By \(course.instructor)")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+
+            HStack {
+                Image(systemName: "doc.fill")
+                    .foregroundColor(.secondary)
+                Text("\(course.filesCount) Files")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
+                Spacer(minLength: 0)
+
+                Image(systemName: "clock.fill")
+                    .foregroundColor(.secondary)
+                Text(course.duration)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         }
         .background(Color.white)
         .cornerRadius(8)
         .shadow(radius: 2)
         .frame(width: 180, height: 240)
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Authorization Required"), message: Text("You need to sign in or create an account to add this course."), dismissButton: .default(Text("OK")))
+        }
     }
-}
 
-struct RecommendedView: View {
-    var courses: [Course]
+    func handleCourseAddition(_ course: Course) async {
+        if await authViewModel.checkIfAuthenticated() {
+            addCourseToCurrentUser(course)
+        } else {
+            showAlert = true
+        }
+    }
 
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text("Recommended for you")
-                .font(.headline)
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    ForEach(courses) { course in
-                        RecommendedCourseRow(course: course)
-                    }
-                }
-                .padding(.horizontal)
+    func addCourseToCurrentUser(_ course: Course) {
+        Task {
+            do {
+                try await authViewModel.addCourseToCurrentUser(course: course)
+                selectedCourses.append(course)
+            } catch {
+                print("Error adding course: \(error.localizedDescription)")
             }
         }
     }
 }
 
 struct RecommendedCoursesView: View {
-    let viewModel = RecommendedCoursesViewModel()
+    @ObservedObject var viewModel = RecommendedCoursesViewModel()
+    @Binding var selectedCourses: [Course]
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -94,11 +103,13 @@ struct RecommendedCoursesView: View {
                 .padding(.vertical, 2)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
-                    ForEach(viewModel.courses) { course in
-                        RecommendedCourseRow(course: course)
+                    ForEach(viewModel.courses, id: \.id) { course in
+                        RecommendedCourseRow(course: course, selectedCourses: $selectedCourses)
+                            .environmentObject(authViewModel)
                     }
                 }
             }
         }
     }
 }
+

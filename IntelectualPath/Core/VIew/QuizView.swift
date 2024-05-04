@@ -7,12 +7,58 @@
 
 import SwiftUI
 
-struct QuizView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
 
-#Preview {
-    QuizView()
+struct QuizView: View {
+    @StateObject private var viewModel = QuizViewModel()
+    
+    var body: some View {
+        ZStack {
+            Color(.systemGray6)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 20) {
+                if viewModel.currentQuestionIndex < viewModel.questions.count {
+                    QuestionView(question: viewModel.questions[viewModel.currentQuestionIndex], selectedOptionIndex: $viewModel.selectedOptionIndex)
+                } else {
+                    ResultView(score: viewModel.score, totalQuestions: viewModel.questions.count)
+                }
+                
+                Spacer()
+                
+                if viewModel.currentQuestionIndex < viewModel.questions.count {
+                    Button(action: {
+                        viewModel.submitAnswer()
+                    }) {
+                        Text("Submit")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                } else {
+                    Button(action: {
+                        viewModel.loadQuestions()
+                        viewModel.currentQuestionIndex = 0
+                        viewModel.score = 0
+                    }) {
+                        Text("Restart")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                }
+            }
+            .padding()
+        }
+        .onAppear {
+            viewModel.loadQuestions()
+        }
+    }
 }

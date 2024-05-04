@@ -17,20 +17,39 @@ class AuthenticationViewModel: ObservableObject {
     @Published var currentUser: User?
     @Published var isAuthenticated = false
     @Published var isLoggedIn = false
+    @Published var selectedCourses: [Course] = []
+    private let userDefaults = UserDefaults.standard
     
     init() {
-        self.userSession = Auth.auth().currentUser
-        
-        Task {
-            await fetchUser()
+            initializeUser()
         }
         
-        $userSession
-            .map { $0 != nil }
-            .assign(to: &$isAuthenticated)
-    }
-    
-    
+        func initializeUser() {
+            userSession = Auth.auth().currentUser
+            loadUserFromUserDefaults()
+            Task {
+                await fetchUserIfNeeded()
+                updateAuthenticationStatus()
+            }
+        }
+        
+        private func loadUserFromUserDefaults() {
+            if let userData = userDefaults.data(forKey: "currentUser"), let user = try? JSONDecoder().decode(User.self, from: userData) {
+                currentUser = user
+                isLoggedIn = true
+            }
+        }
+        
+        private func saveUserToUserDefaults() {
+            if let user = currentUser, let userData = try? JSONEncoder().encode(user) {
+                userDefaults.set(userData, forKey: "currentUser")
+            }
+        }
+        
+        private func updateAuthenticationStatus() {
+            isAuthenticated = userSession != nil
+            isLoggedIn = userSession != nil && currentUser != nil
+        }
     func checkIfNewUser() async -> Bool {
         guard let currentUser = Auth.auth().currentUser else {
             return true
@@ -53,16 +72,22 @@ class AuthenticationViewModel: ObservableObject {
     }
     
     func signIn(withEmail email: String, password: String) async throws {
-        do {
-            let credential = EmailAuthProvider.credential(withEmail: email, password: password)
-            let result = try await Auth.auth().signIn(with: credential)
-            self.userSession = result.user
-            await fetchUser()
-            self.isAuthenticated = await checkIfAuthenticated()
-            self.isLoggedIn = true
-            didSignInSuccess()
+            do {
+                let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+                let result = try await Auth.auth().signIn(with: credential)
+                userSession = result.user
+                await fetchUserIfNeeded()
+                saveUserToUserDefaults()
+                updateAuthenticationStatus()
+                didSignInSuccess()
+            } catch {
+                isLoggedIn = false
+                isAuthenticated = false
+                throw error
+            }
         }
-    }
+
+
     
     func getDeviceInfo() -> [String: Any] {
         let device = UIDevice.current
@@ -103,6 +128,68 @@ class AuthenticationViewModel: ObservableObject {
             throw error
         }
     }
+    
+    func addCourseToCurrentUser(course: Course) async throws {
+        guard let userID = self.userSession?.uid else {
+            return
+        }
+        
+        do {
+            let courseDict: [String: Any] = [
+                "title": course.title,
+                "category": course.category,
+                "lessonCount": course.lessonCount,
+                "duration": course.duration,
+                "instructor": course.instructor,
+                "filesCount": course.filesCount,
+                "description": course.description ?? ""
+            ]
+            
+            let userDocRef = Firestore.firestore().collection("users").document(userID)
+            try await userDocRef.updateData([
+                "selectedCourses": FieldValue.arrayUnion([courseDict])
+            ])
+        } catch {
+            throw error
+        }
+    }
+
+    func fetchUserCourses() async {
+        guard let userID = userSession?.uid else {
+            print("No user ID available")
+            return
+        }
+        
+        let userDocRef = Firestore.firestore().collection("users").document(userID)
+        do {
+            let snapshot = try await userDocRef.getDocument()
+            if let data = snapshot.data(), let coursesData = data["selectedCourses"] as? [[String: Any]] {
+                let fetchedCourses: [Course] = coursesData.compactMap { dict in
+                    guard let title = dict["title"] as? String,
+                          let category = dict["category"] as? String,
+                          let lessonCount = dict["lessonCount"] as? Int,
+                          let duration = dict["duration"] as? String,
+                          let instructor = dict["instructor"] as? String,
+                          let filesCount = dict["filesCount"] as? Int,
+                          let description = dict["description"] as? String else {
+                              print("Error mapping course from Firestore")
+                              return nil
+                          }
+                    return Course(id: UUID().uuidString, title: title, category: category, lessonCount: lessonCount, duration: duration, instructor: instructor, filesCount: filesCount, description: description)
+                }
+                DispatchQueue.main.async {
+                    self.selectedCourses = fetchedCourses
+                    print("Courses fetched: \(self.selectedCourses)")
+                }
+            } else {
+                print("No data found or data format incorrect")
+            }
+        } catch {
+            print("Failed to fetch user courses: \(error)")
+        }
+    }
+
+
 
     func updateProgress(forUserWithID userID: String, newProgress: Double) async throws {
         do {
@@ -123,8 +210,13 @@ class AuthenticationViewModel: ObservableObject {
     
     func didSignInSuccess() {
         isLoggedIn = true
+        UserDefaults.standard.set(true, forKey: "isLoggedIn")
         NotificationCenter.default.post(name: Notification.Name("UserDidSignIn"), object: nil)
+        Task {
+            await fetchUserCourses()
+        }
     }
+
     
     func didRegistrationSuccess() {
         isLoggedIn = true
@@ -142,15 +234,18 @@ class AuthenticationViewModel: ObservableObject {
     
     
     func signOut() {
-        do {
-            try Auth.auth().signOut()
-            self.userSession = nil
-            self.currentUser = nil
-            self.isAuthenticated = false
-        } catch {
-            //
+            do {
+                try Auth.auth().signOut()
+                userSession = nil
+                currentUser = nil
+                isAuthenticated = false
+                isLoggedIn = false
+                userDefaults.removeObject(forKey: "currentUser")
+                userDefaults.removeObject(forKey: "isLoggedIn")
+            } catch {
+                print("Error signing out: \(error)")
+            }
         }
-    }
     
     func deleteUser() async {
         do {
@@ -191,12 +286,25 @@ class AuthenticationViewModel: ObservableObject {
     
     func fetchUser() async {
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        
         do {
             let documentSnapshot = try await Firestore.firestore().collection("users").document(uid).getDocument()
-            self.currentUser = try documentSnapshot.data(as: User.self)
+            self.currentUser = try? documentSnapshot.data(as: User.self)
         } catch {
-            //
+            print("Error fetching user data: \(error)")
         }
     }
+
+    func fetchUserIfNeeded() async {
+            guard let uid = userSession?.uid else { return }
+            do {
+                let documentSnapshot = try await Firestore.firestore().collection("users").document(uid).getDocument()
+                if let user = try? documentSnapshot.data(as: User.self) {
+                    currentUser = user
+                    saveUserToUserDefaults()
+                }
+                updateAuthenticationStatus()
+            } catch {
+                print("Error fetching user data: \(error)")
+            }
+        }
 }

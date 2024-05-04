@@ -10,7 +10,7 @@ import Combine
 
 struct LaunchView: View {
     @StateObject var viewModel = LaunchViewModel()
-    
+
     var body: some View {
         NavigationView {
             Group {
@@ -18,8 +18,10 @@ struct LaunchView: View {
                     switch navigationDestination {
                     case .welcomeScreen:
                         WelcomeScreen()
-                            .task {
-                                await viewModel.handleWelcomeScreen()
+                            .onAppear {
+                                Task {
+                                    await viewModel.handleOnAppear()
+                                }
                             }
                     case .onboardingScreen:
                         OnBoardingScreen()
@@ -28,13 +30,11 @@ struct LaunchView: View {
                             .environmentObject(viewModel.viewModel)
                     case .mainAuthScreen:
                         MainAuthView()
+                            .environmentObject(viewModel.viewModel)
                     }
                 } else {
                     ProgressView()
                 }
-            }
-            .task {
-                await viewModel.handleOnAppear()
             }
         }
     }

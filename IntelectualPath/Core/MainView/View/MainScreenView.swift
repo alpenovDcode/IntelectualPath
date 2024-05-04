@@ -8,30 +8,24 @@
 import SwiftUI
 
 struct MainScreenView: View {
-    
     @State private var selectedTab = 0
-    @EnvironmentObject var viewModel: AuthenticationViewModel
-    @State private var isProfileViewActive = false
-    
+    @EnvironmentObject var authViewModel: AuthenticationViewModel  // Uses EnvironmentObject
+
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationView {
                 ScrollView {
                     VStack(alignment: .leading) {
-                        HeaderView(user: viewModel.currentUser)
-                        
-                        SearchBarView()
-                        
-//                        ProgressCardView(user: viewModel.currentUser)
-//                            .padding([.top, .bottom], 8)
-                        
-                        AllCategoriesView()
-                        
-                        RecommendedCoursesView()
+                        if let user = authViewModel.currentUser {
+                            HeaderView(user: user)  // Assumes HeaderView uses the user info
+                        }
+                        SearchBarView()  // Assuming this doesn't need dynamic data
+                        AllCategoriesView()  // Static view assumed
+                        RecommendedCoursesView(selectedCourses: $authViewModel.selectedCourses)  // Binding to ViewModel
                     }
-                    .padding()
+                    .padding([.leading, .trailing], 8)
+                    .padding(.vertical)
                 }
-                .navigationBarHidden(true)
             }
             .tabItem {
                 Image(systemName: selectedTab == 0 ? "house.fill" : "house")
@@ -39,26 +33,21 @@ struct MainScreenView: View {
             }
             .tag(0)
             
-            Text("Learning View")
-                .tabItem {
-                    Image(systemName: selectedTab == 1 ? "book.fill" : "book")
-                    Text("Learning")
-                }
-                .tag(1)
+            NavigationView {
+                            CoursesListView() // No need to pass selectedCourses
+                                .navigationTitle("Courses")
+                                .environmentObject(authViewModel) // Make sure environmentObject is passed if not globally available
+                        }
+            .tabItem {
+                Image(systemName: selectedTab == 1 ? "book.fill" : "book")
+                Text("Learning")
+            }
+            .tag(1)
+
             
             NavigationView {
-                ProfileView()
-                    .navigationBarTitle("Profile", displayMode: .inline)
-                    .navigationBarItems(
-                        trailing: Button(action: {
-                            isProfileViewActive.toggle()
-                        }, label: {
-                            Text("Edit")
-                        })
-                    )
-                    .sheet(isPresented: $isProfileViewActive) {
-                        EditProfileView()
-                    }
+                ProfileView()  // Assuming this is correctly set up
+                    .navigationTitle("Profile")
             }
             .tabItem {
                 Image(systemName: selectedTab == 2 ? "person.fill" : "person")
@@ -68,8 +57,9 @@ struct MainScreenView: View {
         }
         .accentColor(.blue)
         .task {
-            await viewModel.fetchUser()
+            // This ensures courses are fetched when the view appears
+            await authViewModel.fetchUserIfNeeded()
+            await authViewModel.fetchUserCourses()
         }
     }
 }
-

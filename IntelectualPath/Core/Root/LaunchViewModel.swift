@@ -7,10 +7,12 @@
 
 import SwiftUI
 import Combine
+import Firebase
+import FirebaseAuth
 
 class LaunchViewModel: ObservableObject {
     @Published var navigationDestination: NavigationDestination? = .welcomeScreen
-    @ObservedObject var viewModel = AuthenticationViewModel()
+    @StateObject var viewModel = AuthenticationViewModel()
     @Published var isLoggedIn: Bool = false
     
     enum NavigationDestination {
@@ -19,41 +21,34 @@ class LaunchViewModel: ObservableObject {
         case mainScreen
         case mainAuthScreen
     }
-    private var signInNotification: AnyCancellable?
-    private var registerNotification: AnyCancellable?
+    
     private var cancellables = Set<AnyCancellable>()
     
     init() {
-        self.signInNotification = NotificationCenter.default.publisher(for: Notification.Name("UserDidSignIn"))
-            .sink { _ in
-                self.handleSignIn()
-            }
-        self.registerNotification = NotificationCenter.default.publisher(for: Notification.Name("UserDidRegister"))
-            .sink { _ in
-                self.handleRegistration()
-            }
+        // Подписка на статус входа в систему от viewModel
         viewModel.$isLoggedIn
+            .receive(on: RunLoop.main)
             .sink { [weak self] isLoggedIn in
-                if isLoggedIn {
-                    self?.navigationDestination = .mainScreen
-                }
+                self?.isLoggedIn = isLoggedIn
+                self?.updateUIBasedOnAuthStatus()
             }
             .store(in: &cancellables)
     }
     
-    func handleSignIn() {
-        viewModel.isLoggedIn = true
-    }
-    
-    func handleRegistration() {
-        self.navigationDestination = .mainScreen
-    }
-    
-    func handleWelcomeScreen() async {
-        navigationDestination = .welcomeScreen
+    private func updateUIBasedOnAuthStatus() {
+        if isLoggedIn {
+            navigationDestination = .mainScreen
+        } else if UserDefaults.standard.bool(forKey: "hasSeenWelcomeScreen") {
+            navigationDestination = .welcomeScreen
+        } else {
+            UserDefaults.standard.set(true, forKey: "hasSeenWelcomeScreen")
+            navigationDestination = .onboardingScreen
+        }
     }
     
     func handleOnAppear() async {
+        // Инициализация пользователя и проверка его статуса
+        viewModel.initializeUser()
         if UserDefaults.standard.bool(forKey: "hasSeenWelcomeScreen") {
             let isNewUser = await viewModel.checkIfNewUser()
             if isNewUser {
@@ -69,13 +64,11 @@ class LaunchViewModel: ObservableObject {
     }
     
     private func checkAuthentication() async {
-        do {
-            let isAuthenticated = await viewModel.checkIfAuthenticated()
-            if isAuthenticated {
-                viewModel.isLoggedIn = true
-            } else {
-                navigationDestination = .mainAuthScreen
-            }
+        let isAuthenticated = await viewModel.checkIfAuthenticated()
+        if isAuthenticated {
+            viewModel.isLoggedIn = true
+        } else {
+            navigationDestination = .mainAuthScreen
         }
     }
 }
