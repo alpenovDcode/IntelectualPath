@@ -7,40 +7,43 @@
 
 import SwiftUI
 
-
 struct QuizView: View {
     @StateObject private var viewModel = QuizViewModel()
-    
+    var topic: String
+
     var body: some View {
         ZStack {
             Color(.systemGray6)
                 .ignoresSafeArea()
-            
+
             VStack(spacing: 20) {
                 if viewModel.currentQuestionIndex < viewModel.questions.count {
                     QuestionView(question: viewModel.questions[viewModel.currentQuestionIndex], selectedOptionIndex: $viewModel.selectedOptionIndex)
                 } else {
-                    ResultView(score: viewModel.score, totalQuestions: viewModel.questions.count)
+                    ResultView(score: viewModel.score, totalQuestions: viewModel.questions.count, questions: viewModel.questions)
                 }
-                
+
                 Spacer()
-                
+
                 if viewModel.currentQuestionIndex < viewModel.questions.count {
                     Button(action: {
-                        viewModel.submitAnswer()
+                        if viewModel.selectedOptionIndex != nil {
+                            viewModel.submitAnswer()
+                        }
                     }) {
                         Text("Submit")
                             .font(.title2)
                             .fontWeight(.bold)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.blue)
+                            .background(viewModel.selectedOptionIndex != nil ? Color.blue : Color.gray)
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
+                    .disabled(viewModel.selectedOptionIndex == nil)
                 } else {
                     Button(action: {
-                        viewModel.loadQuestions()
+                        viewModel.loadQuestions(for: topic)
                         viewModel.currentQuestionIndex = 0
                         viewModel.score = 0
                     }) {
@@ -58,7 +61,7 @@ struct QuizView: View {
             .padding()
         }
         .onAppear {
-            viewModel.loadQuestions()
+            viewModel.loadQuestions(for: topic)
         }
     }
 }

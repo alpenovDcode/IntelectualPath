@@ -172,22 +172,24 @@ class AuthenticationViewModel: ObservableObject {
                           let instructor = dict["instructor"] as? String,
                           let filesCount = dict["filesCount"] as? Int,
                           let description = dict["description"] as? String else {
-                              print("Error mapping course from Firestore")
+                              print("Error mapping course from Firestore: missing expected fields")
                               return nil
                           }
                     return Course(id: UUID().uuidString, title: title, category: category, lessonCount: lessonCount, duration: duration, instructor: instructor, filesCount: filesCount, description: description)
                 }
                 DispatchQueue.main.async {
                     self.selectedCourses = fetchedCourses
-                    print("Courses fetched: \(self.selectedCourses)")
+                    print("Courses successfully fetched and updated: \(self.selectedCourses.count) courses loaded.")
                 }
             } else {
-                print("No data found or data format incorrect")
+                print("No data found or data format incorrect for 'selectedCourses'")
             }
         } catch {
-            print("Failed to fetch user courses: \(error)")
+            print("Failed to fetch user courses: \(error.localizedDescription)")
         }
     }
+
+
 
 
 

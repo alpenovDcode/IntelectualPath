@@ -8,5 +8,5 @@
 import SwiftUI
 
 struct AllCategoriesViewModel {
-    let categories: [String] = ["Literature", "General math", "Language", "Biology"]
+    let categories: [String] = ["Programming", "General math", "Language", "Biology"]
 }

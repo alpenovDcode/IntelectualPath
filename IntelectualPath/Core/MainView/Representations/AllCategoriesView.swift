@@ -9,7 +9,8 @@ import SwiftUI
 
 struct AllCategoriesView: View {
     let viewModel = AllCategoriesViewModel()
-    
+    @StateObject var recommendedCoursesViewModel = RecommendedCoursesViewModel()
+
     var body: some View {
         VStack(alignment: .leading) {
             Text("All Courses")
@@ -18,7 +19,7 @@ struct AllCategoriesView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
                     ForEach(viewModel.categories, id: \.self) { category in
-                        CategoryView(categoryName: category)
+                        CategoryView(categoryName: category, viewModel: recommendedCoursesViewModel)
                     }
                 }
             }
@@ -28,12 +29,18 @@ struct AllCategoriesView: View {
 
 struct CategoryView: View {
     var categoryName: String
+    @ObservedObject var viewModel: RecommendedCoursesViewModel
 
     var body: some View {
-        Text(categoryName)
-            .padding(.horizontal)
-            .padding(.vertical, 8)
-            .background(RoundedRectangle(cornerRadius: 20).fill(Color.blue))
-            .foregroundColor(.white)
+        Button(action: {
+            viewModel.loadCourses(for: categoryName)
+        }) {
+            Text(categoryName)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .background(RoundedRectangle(cornerRadius: 20).fill(Color.blue))
+                .foregroundColor(.white)
+        }
     }
 }
+

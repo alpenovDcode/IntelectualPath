@@ -9,57 +9,80 @@ import SwiftUI
 
 struct MainScreenView: View {
     @State private var selectedTab = 0
-    @EnvironmentObject var authViewModel: AuthenticationViewModel  // Uses EnvironmentObject
-
+    @State private var selectedCourses: [Course] = []
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @StateObject var recommendedCoursesViewModel = RecommendedCoursesViewModel()
+    @State private var showErrorMessage = false
+    @State private var showSuccessMessage = false
+    @State private var messageText = ""
+    @StateObject var newsViewModel = NewsViewModel()
+    
     var body: some View {
-        TabView(selection: $selectedTab) {
-            NavigationView {
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        if let user = authViewModel.currentUser {
-                            HeaderView(user: user)  // Assumes HeaderView uses the user info
+        ZStack {
+            VStack(spacing: 0) {
+                // Main Content
+                switch selectedTab {
+                case 0:
+                    NavigationView {
+                        ScrollView {
+                            VStack(alignment: .leading) {
+                                if let user = authViewModel.currentUser {
+                                    HeaderView(user: user)
+                                }
+                                SearchBarView()
+                                AllCategoriesView(recommendedCoursesViewModel: recommendedCoursesViewModel)
+                                RecommendedCoursesView(viewModel: recommendedCoursesViewModel, selectedCourses: $selectedCourses, showErrorMessage: $showErrorMessage, showSuccessMessage: $showSuccessMessage, messageText: $messageText)
+                                    .environmentObject(authViewModel)
+                                UsefulArticlesView(articles: sampleArticles)
+                            }
+                            .padding([.leading, .trailing], 8)
+                            .padding(.vertical)
                         }
-                        SearchBarView()  // Assuming this doesn't need dynamic data
-                        AllCategoriesView()  // Static view assumed
-                        RecommendedCoursesView(selectedCourses: $authViewModel.selectedCourses)  // Binding to ViewModel
                     }
-                    .padding([.leading, .trailing], 8)
-                    .padding(.vertical)
+                case 1:
+                    NavigationView {
+                        CoursesListView().environmentObject(authViewModel)
+                    }
+                case 2:
+                    NavigationView {
+                        ProfileView()
+                    }
+                case 3:
+                    if authViewModel.isAuthenticated { // Check if user is authenticated
+                            CreateNewsView(viewModel: newsViewModel)
+                    } else {
+                            NewsListView(viewModel: newsViewModel)
+                    }
+                case 4:
+                        NewsListView(viewModel: newsViewModel)
+                default:
+                    Text("Selection does not exist")
                 }
+                
+                // Custom Tab Bar
+                CustomTabBar(selectedTab: $selectedTab, isAuthenticated: authViewModel.isAuthenticated) // Pass authentication status
             }
-            .tabItem {
-                Image(systemName: selectedTab == 0 ? "house.fill" : "house")
-                Text("Home")
-            }
-            .tag(0)
-            
-            NavigationView {
-                            CoursesListView() // No need to pass selectedCourses
-                                .navigationTitle("Courses")
-                                .environmentObject(authViewModel) // Make sure environmentObject is passed if not globally available
-                        }
-            .tabItem {
-                Image(systemName: selectedTab == 1 ? "book.fill" : "book")
-                Text("Learning")
-            }
-            .tag(1)
-
-            
-            NavigationView {
-                ProfileView()  // Assuming this is correctly set up
-                    .navigationTitle("Profile")
-            }
-            .tabItem {
-                Image(systemName: selectedTab == 2 ? "person.fill" : "person")
-                Text("Profile")
-            }
-            .tag(2)
+            .edgesIgnoringSafeArea(.bottom)
+            .overlay(
+                ToastView(text: showErrorMessage ? messageText : "Курс \(messageText) успешно добавлен", isShowing: showErrorMessage ? $showErrorMessage : $showSuccessMessage)
+                    .padding(.top, -40)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .transition(.asymmetric(insertion: .move(edge: .top), removal: .move(edge: .top)))
+                    .zIndex(1)
+            )
         }
-        .accentColor(.blue)
         .task {
-            // This ensures courses are fetched when the view appears
             await authViewModel.fetchUserIfNeeded()
             await authViewModel.fetchUserCourses()
         }
     }
 }
+
+//struct MainScreenView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        MainScreenView()
+//            .environmentObject(AuthenticationViewModel()) // You might need to provide mock data or a dummy view model here
+//            .environmentObject(RecommendedCoursesViewModel()) // You might need to provide mock data or a dummy view model here
+//            .environmentObject(NewsViewModel())
+//    }
+//}
