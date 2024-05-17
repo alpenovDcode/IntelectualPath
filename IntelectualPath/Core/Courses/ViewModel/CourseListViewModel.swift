@@ -12,6 +12,7 @@ import FirebaseAuth
 
 class CoursesListViewModel: ObservableObject {
     @Published var selectedCourses: [Course] = []
+    @Published var courseInfos: [Course] = []
 
     func fetchSelectedCourses() {
         guard let userID = Auth.auth().currentUser?.uid else {
@@ -35,6 +36,21 @@ class CoursesListViewModel: ObservableObject {
             }
         }
     }
+    func fetchCourseInfo(for courseID: String) {
+            Firestore.firestore().collection("courseInfo").document(courseID).getDocument { documentSnapshot, error in
+                if let error = error {
+                    print("Error fetching course info: \(error.localizedDescription)")
+                    return
+                }
+
+                if let documentSnapshot = documentSnapshot, documentSnapshot.exists {
+                    guard let courseInfo = try? documentSnapshot.data(as: Course.self) else { return }
+                    DispatchQueue.main.async {
+                        self.courseInfos.append(courseInfo)
+                    }
+                }
+            }
+        }
 
     private func fetchCourses(withIDs courseIDs: [String]) {
         let group = DispatchGroup()
@@ -55,7 +71,7 @@ class CoursesListViewModel: ObservableObject {
         }
 
         group.notify(queue: .main) {
-            // All courses fetched
+            
         }
     }
 }

@@ -9,6 +9,8 @@ import Foundation
 import Combine
 import UIKit
 import FirebaseFirestore
+import Firebase
+import FirebaseDatabaseInternal
 
 
 extension NewsViewModel {
@@ -24,8 +26,8 @@ extension NewsViewModel {
             }
         }
     }
-
-
+    
+    
     // Add news item to Firestore
     func addNewsItemToFirestore(username: String, topic: String, text: String) {
         let newItem = NewsItem(id: UUID().uuidString, username: username, topic: topic, text: text, date: Date())
@@ -36,7 +38,7 @@ extension NewsViewModel {
             print("Ошибка при записи документа: \(error)")
         }
     }
-
+    
 }
 
 

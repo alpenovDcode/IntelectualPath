@@ -25,7 +25,7 @@ struct MainScreenView: View {
                 case 0:
                     NavigationView {
                         ScrollView {
-                            VStack(alignment: .leading) {
+                            VStack(alignment: .center, spacing: 10) {
                                 if let user = authViewModel.currentUser {
                                     HeaderView(user: user)
                                 }
@@ -35,7 +35,6 @@ struct MainScreenView: View {
                                     .environmentObject(authViewModel)
                                 UsefulArticlesView(articles: sampleArticles)
                             }
-                            .padding([.leading, .trailing], 8)
                             .padding(.vertical)
                         }
                     }
@@ -48,7 +47,7 @@ struct MainScreenView: View {
                         ProfileView()
                     }
                 case 3:
-                    if authViewModel.isAuthenticated { // Check if user is authenticated
+                    if authViewModel.isAuthenticated {
                             CreateNewsView(viewModel: newsViewModel)
                     } else {
                             NewsListView(viewModel: newsViewModel)
@@ -58,8 +57,6 @@ struct MainScreenView: View {
                 default:
                     Text("Selection does not exist")
                 }
-                
-                // Custom Tab Bar
                 CustomTabBar(selectedTab: $selectedTab, isAuthenticated: authViewModel.isAuthenticated) // Pass authentication status
             }
             .edgesIgnoringSafeArea(.bottom)

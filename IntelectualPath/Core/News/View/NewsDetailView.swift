@@ -16,17 +16,16 @@ struct NewsDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                // User information vertically aligned and tight to the left
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
                         Circle()
                             .fill(Color.black)
                             .frame(width: 50, height: 50)
-                            .padding(0) // Remove any default padding around the circle
+                            .padding(0)
                         
                         Text(authViewModel.currentUser?.fullName ?? "")
                             .font(.headline)
-                            .padding(.leading, 8) // Ensure no leading padding
+                            .padding(.leading, 8)
                         
                         Text(newsItem.topic)
                             .font(.subheadline)
@@ -39,14 +38,12 @@ struct NewsDetailView: View {
                             .padding(.leading, 8)
                     }
                 }
-                .padding(.leading, 8) // Ensure the VStack itself has no leading padding
-                
-                // Main text content of the news
+                .padding(.leading, 8)
                 Text(newsItem.text)
-                    .multilineTextAlignment(.center) // Center-align the text
-                    .padding([.top, .horizontal]) // Apply padding to all sides except leading
+                    .multilineTextAlignment(.center)
+                    .padding([.top, .horizontal])
             }
-            .padding([.leading, .top, .bottom]) // Ensure no padding on the leading edge of the outermost VStack
+            .padding([.leading, .top, .bottom])
         }
         .navigationTitle(newsItem.topic)    }
     

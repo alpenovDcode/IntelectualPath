@@ -120,6 +120,7 @@ struct RecommendedCoursesView: View {
                 }
             }
         }
+        .padding([.leading, .trailing], 18)
     }
 }
 

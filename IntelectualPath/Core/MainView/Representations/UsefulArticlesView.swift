@@ -39,7 +39,7 @@ struct UsefulArticlesView: View {
                 .shadow(radius: 2)
             }
         }
-        .padding([.leading, .trailing], 8)
+        .padding([.leading, .trailing], 18)
     }
 }
 //

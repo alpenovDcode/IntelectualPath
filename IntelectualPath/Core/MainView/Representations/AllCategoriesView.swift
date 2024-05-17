@@ -24,6 +24,7 @@ struct AllCategoriesView: View {
                 }
             }
         }
+        .padding([.leading, .trailing], 18)
     }
 }
 

@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Firebase
 
 class QuizViewModel: ObservableObject {
     @Published var questions: [Question] = []

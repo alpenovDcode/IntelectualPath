@@ -13,13 +13,29 @@ struct AuthButtons: View {
         VStack(spacing: 10) {
             NavigationLink(destination: LoginView()) {
                 Text("Sign in")
-                    .buttonStyle(MainMenuButtonStyle())
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.blue, lineWidth: 2)
+                    )
             }
 
             NavigationLink(destination: RegistrationView()) {
                 Text("Sign Up")
-                    .buttonStyle(MainMenuButtonStyle())
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.blue, lineWidth: 2)
+                    )
             }
         }
+        .padding()
     }
 }
+

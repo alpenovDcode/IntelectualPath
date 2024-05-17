@@ -26,5 +26,6 @@ struct HeaderView: View {
                     .imageScale(.large)
             }
         }
+        .padding([.leading, .trailing], 18)
     }
 }

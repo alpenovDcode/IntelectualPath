@@ -23,8 +23,7 @@ struct ProfileView: View {
                 notAuthenticatedView()
             }
         }
-        .navigationTitle("Profile")  // Заголовок для всего представления
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitle("Profile", displayMode: .inline)
         .onAppear {
             Task {
                 // Пытаемся загрузить данные пользователя, если это необходимо

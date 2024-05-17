@@ -56,6 +56,7 @@ struct CourseDetailView: View {
             }
             .padding()
         }
+
         .navigationTitle(course.title)
         .navigationBarTitleDisplayMode(.inline)
     }

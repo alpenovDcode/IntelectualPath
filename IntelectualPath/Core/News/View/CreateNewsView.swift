@@ -32,7 +32,6 @@ struct CreateNewsView: View {
                 
                 Button("Опубликовать новость") {
                     viewModel.addNewsItemToFirestore(username: username, topic: topic, text: text)
-                    // Reset fields after posting
                     username = ""
                     topic = ""
                     text = ""
